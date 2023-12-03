@@ -21,14 +21,11 @@ let is_impossible_color_set = function
   | { red; green; blue } when red > 12 || green > 13 || blue > 14 -> Some ()
   | _ -> None
 
-let bool_of_option = function
-  | Some _ -> true
-  | None -> false
 
 let is_impossible_game game_string =
   String.split game_string ~on:';'
   |> List.find_map ~f:(fun s -> color_set_of_handful_string s |> is_impossible_color_set)
-  |> bool_of_option
+  |> Util.bool_of_option
 
 let parse_game_id str =
   match String.split str ~on:' ' with

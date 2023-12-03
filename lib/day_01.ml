@@ -60,10 +60,8 @@ let match_token_at_pos str pos =
 
 let match_token str range = List.find_map_exn range ~f:(fun pos -> match_token_at_pos str pos);;
 
-let range_of_string s = List.range 0 (String.length s);;
-
 let process_line str =
-  let range = range_of_string str in
+  let range = Util.range_of_string str in
   let first =  match_token str range in
   let last = match_token str (List.rev range) in
   (* print_endline ((first ^ last) ^ " " ^ str); *)
