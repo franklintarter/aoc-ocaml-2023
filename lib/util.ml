@@ -9,7 +9,8 @@ open Core
 
 let join strings = List.fold strings ~init:"" ~f:(fun a i -> a ^ "," ^ i);;
 let str_list_of_int_list l = List.map l ~f:string_of_int
-let print_string_list l = l |> str_list_of_int_list |> join |> print_endline;;
+let print_int_list l = l |> str_list_of_int_list |> join |> print_endline;;
+let print_string_list l = l |> join |> print_endline;;
 
 let print_option_int = function
   | None -> print_endline "None"
