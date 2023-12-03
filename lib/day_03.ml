@@ -64,3 +64,66 @@ let do_part_one sum channel =
 
 let part_one_answer = In_channel.create "./inputs/day_03.txt" |> do_part_one 0
 
+(* Part 2 *)
+
+let is_star = function
+  | '*' -> true
+  | _ -> false
+
+let normalize_borders line pos =
+  let left = if pos = 0 then '.' else String.get line (pos - 1) in
+  let middle = String.get line pos in
+  let right = if pos - 1 = String.length line then  '.' else String.get line (pos + 1) in
+  (Char.is_digit left, Char.is_digit middle, Char.is_digit right)
+
+let rec get_part_start pos line =
+  if pos > 0 && Char.is_digit (String.get line (pos - 1)) then get_part_start (pos - 1) line
+  else pos
+
+let get_part_number pos line =
+  let start = get_part_start pos line in
+  int_of_string (get_digit_string "" line start)
+
+let process_border_line line pos parts =
+match line with
+| None -> parts
+| Some line ->
+match normalize_borders line pos with
+| (false, false, false) -> parts
+| (true, false, true) ->
+    List.append [get_part_number (pos -1) line;(get_part_number (pos + 1) line)] parts
+| (l,m,r) ->
+    let as_arr = [|l;m;r|] in
+    let offset = List.range (-1) 2 |> List.find_mapi_exn ~f:(fun idx offset ->  if Array.get as_arr idx then Some offset else None) in
+    get_part_number (pos + offset) line::parts
+
+let get_adjacent_parts prev_line curr_line next_line pos =
+  process_border_line prev_line pos [] |> process_border_line curr_line pos |> process_border_line next_line pos
+
+let get_gear_value prev_line curr_line next_line pos =
+  let parts = get_adjacent_parts prev_line curr_line next_line pos in
+  if List.length parts = 2 then List.hd_exn parts * List.last_exn parts
+  else 0
+
+let rec process_line_2 prev_line curr_line next_line pos sum =
+match pos with
+| pos when pos >= String.length curr_line -> sum
+| pos when is_star (String.get curr_line pos) ->
+  let gear_value = get_gear_value prev_line (Some curr_line) next_line pos in
+  process_line_2 prev_line curr_line next_line (pos + 1) (sum + gear_value)
+| pos -> process_line_2 prev_line curr_line next_line (pos + 1) sum
+
+let rec do_part_two sum prev_line curr_line next_line channel =
+  match next_line with
+  | None -> In_channel.close channel; process_line_2 prev_line curr_line next_line 0 sum
+  | Some next_line ->
+      let next_sum = process_line_2 prev_line curr_line (Some next_line) 0 sum in
+      do_part_two next_sum (Some curr_line) next_line (In_channel.input_line channel) channel
+
+let do_part_two sum channel =
+  let curr_line = In_channel.input_line_exn channel in
+  let next_line = In_channel.input_line channel in
+  do_part_two sum None curr_line next_line channel
+
+let part_two_answer = In_channel.create "./inputs/day_03.txt" |> do_part_two 0
+
