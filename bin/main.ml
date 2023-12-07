@@ -13,5 +13,9 @@ let () =
   (* print_endline (string_of_int Day_04.part_one_answer); (* 22674 *) *)
   (* print_endline (string_of_int Day_04.part_two_answer); (* 5747443 *) *)
 
-  print_endline (string_of_int Day_05.part_one_answer); (* 199602917 *)
+  (* print_endline (string_of_int Day_05.part_one_answer); (* 199602917 *) *)
   (* print_endline (string_of_int Day_05.part_two_answer); (* 2254686 *) (* 36 second run time :) *) *)
+
+  (* print_endline (string_of_int Day_06.part_one_answer); (* 220320 *) *)
+  print_endline (string_of_int Day_06.part_two_answer); (* 34454850 *)
+
